@@ -1,22 +1,24 @@
 /*
- * SoapUI, Copyright (C) 2004-2017 SmartBear Software
+ * SoapUI, Copyright (C) 2004-2022 SmartBear Software
  *
- * Licensed under the EUPL, Version 1.1 or - as soon as they will be approved by the European Commission - subsequent 
- * versions of the EUPL (the "Licence"); 
- * You may not use this work except in compliance with the Licence. 
- * You may obtain a copy of the Licence at: 
- * 
- * http://ec.europa.eu/idabc/eupl 
- * 
- * Unless required by applicable law or agreed to in writing, software distributed under the Licence is 
- * distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
- * express or implied. See the Licence for the specific language governing permissions and limitations 
- * under the Licence. 
+ * Licensed under the EUPL, Version 1.1 or - as soon as they will be approved by the European Commission - subsequent
+ * versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the Licence is
+ * distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the Licence for the specific language governing permissions and limitations
+ * under the Licence.
  */
 
 package com.eviware.soapui.impl;
 
 import com.eviware.soapui.SoapUI;
+import com.eviware.soapui.analytics.Analytics;
+import com.eviware.soapui.config.ProjectConfig;
 import com.eviware.soapui.config.SoapuiWorkspaceDocumentConfig;
 import com.eviware.soapui.config.WorkspaceProjectConfig;
 import com.eviware.soapui.config.WorkspaceProjectConfig.Status;
@@ -40,7 +42,8 @@ import com.eviware.soapui.support.StringUtils;
 import com.eviware.soapui.support.UISupport;
 import com.eviware.soapui.support.resolver.ResolveDialog;
 import com.eviware.soapui.support.types.StringToStringMap;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
 
@@ -49,12 +52,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.eviware.soapui.analytics.SoapUIActions.IMPORT_PROJECT_FROM_HIGHER_VERSION;
+import static com.eviware.soapui.analytics.SoapUIActions.IMPORT_PRO_PROJECT;
 import static com.eviware.soapui.impl.wsdl.WsdlProject.ProjectEncryptionStatus;
 import static com.eviware.soapui.impl.wsdl.WsdlProject.ProjectEncryptionStatus.NOT_ENCRYPTED;
 
@@ -65,7 +71,7 @@ import static com.eviware.soapui.impl.wsdl.WsdlProject.ProjectEncryptionStatus.N
  */
 
 public class WorkspaceImpl extends AbstractModelItem implements Workspace {
-    private final static Logger log = Logger.getLogger(WorkspaceImpl.class);
+    private final static Logger log = LogManager.getLogger(WorkspaceImpl.class);
     public static final MessageSupport messages = MessageSupport.getMessages(WorkspaceImpl.class);
 
     private List<Project> projectList = new ArrayList<Project>();
@@ -160,6 +166,7 @@ public class WorkspaceImpl extends AbstractModelItem implements Workspace {
                     SoapUI.logError(e);
                 }
             }
+            ensureProjectsCompatibility(projectList);
         } else {
             workspaceConfig = SoapuiWorkspaceDocumentConfig.Factory.newInstance();
             workspaceConfig.addNewSoapuiWorkspace().setName(messages.get("DefaultWorkspaceName"));
@@ -167,6 +174,47 @@ public class WorkspaceImpl extends AbstractModelItem implements Workspace {
 
             settings = new XmlBeansSettingsImpl(this, SoapUI.getSettings(), workspaceConfig.getSoapuiWorkspace()
                     .getSettings());
+        }
+    }
+
+    private void ensureProjectsCompatibility(List<Project> projects) {
+        List<String> newerProjectsList = new ArrayList<>();
+        List<String> readyProjectsList = new ArrayList<>();
+        for (Project project : projects) {
+            if (project instanceof WsdlProject) {
+                if (((WsdlProject) project).isFromReadyApi()) {
+                    ProjectConfig config = ((WsdlProject) project).getProjectDocument().getSoapuiProject();
+                    String version = StringUtils.isNullOrEmpty(config.getUpdated()) ? "" : StringUtils.getSubstringBeforeFirstWhitespace(config.getUpdated());
+                    Analytics.trackAction(IMPORT_PRO_PROJECT, "project_version", StringUtils.hasContent(version) ? version : "UNDEFINED");
+                    readyProjectsList.add(
+                            messages.get(
+                                    "Compatibility.with.ReadyAPI.one.project",
+                                    config.getName(),
+                                    StringUtils.hasContent(version) ? "(" + version + ")" : ""));
+                } else if (((WsdlProject) project).isFromNewerVersion()) {
+                    ProjectConfig config = ((WsdlProject) project).getProjectDocument().getSoapuiProject();
+                    String version = config.getSoapuiVersion();
+                    Analytics.trackAction(IMPORT_PROJECT_FROM_HIGHER_VERSION, "project_version", version);
+                    newerProjectsList.add(
+                            messages.get(
+                                    "Compatibility.with.SoapUI.one.project",
+                                    config.getName(),
+                                    version,
+                                    SoapUI.PRODUCT_NAME));
+                }
+            }
+        }
+        String message = messages.get(
+                "WorkspaceImpl.Compatibility.Text",
+                SoapUI.PRODUCT_NAME,
+                SoapUI.SOAPUI_VERSION);
+        if (!readyProjectsList.isEmpty()) {
+            UISupport.showInfoMessage(String.join("\r\n", readyProjectsList) + message,
+                    messages.get("Compatibility.with.ReadyAPI.Title"));
+        }
+        if (!newerProjectsList.isEmpty()) {
+            UISupport.showInfoMessage(String.join("\r\n", newerProjectsList) + message,
+                    messages.get("Compatibility.with.SoapUI.Title"));
         }
     }
 
@@ -338,6 +386,8 @@ public class WorkspaceImpl extends AbstractModelItem implements Workspace {
         WsdlProject project = (WsdlProject) ProjectFactoryRegistry.getProjectFactory("wsdl").createNew(
                 projectFile.getAbsolutePath(), this);
 
+        ensureProjectsCompatibility(Arrays.asList(project));
+
         afterProjectImport(project);
 
         return project;
@@ -346,6 +396,8 @@ public class WorkspaceImpl extends AbstractModelItem implements Workspace {
     @Override
     public Project importProject(InputStream inputStream) {
         WsdlProject project = (WsdlProject) ProjectFactoryRegistry.getProjectFactory("wsdl").createNew(inputStream, this);
+
+        ensureProjectsCompatibility(Arrays.asList(project));
 
         afterProjectImport(project);
 
@@ -543,6 +595,9 @@ public class WorkspaceImpl extends AbstractModelItem implements Workspace {
 
     public WsdlProject importRemoteProject(String url) throws SoapUIException {
         WsdlProject project = (WsdlProject) ProjectFactoryRegistry.getProjectFactory("wsdl").createNew(url, this);
+
+        ensureProjectsCompatibility(Arrays.asList(project));
+
         afterProjectImport(project);
 
         return project;
@@ -620,8 +675,8 @@ public class WorkspaceImpl extends AbstractModelItem implements Workspace {
 
     public boolean isSupportInformationDialog() {
         boolean isCollect = false;
-        if(workspaceConfig != null) {
-            if(!workspaceConfig.getSoapuiWorkspace().isSetCollectInfoForSupport()) {
+        if (workspaceConfig != null) {
+            if (!workspaceConfig.getSoapuiWorkspace().isSetCollectInfoForSupport()) {
                 return true;
             }
             isCollect = workspaceConfig.getSoapuiWorkspace().getCollectInfoForSupport();
@@ -630,7 +685,8 @@ public class WorkspaceImpl extends AbstractModelItem implements Workspace {
     }
 
     public void setSupportInformationDialog(boolean value) {
-        if(workspaceConfig != null)
+        if (workspaceConfig != null) {
             workspaceConfig.getSoapuiWorkspace().setCollectInfoForSupport(value);
+        }
     }
 }

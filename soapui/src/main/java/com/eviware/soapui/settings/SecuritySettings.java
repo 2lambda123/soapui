@@ -1,5 +1,5 @@
 /*
- * SoapUI, Copyright (C) 2004-2017 SmartBear Software
+ * SoapUI, Copyright (C) 2004-2022 SmartBear Software
  *
  * Licensed under the EUPL, Version 1.1 or - as soon as they will be approved by the European Commission - subsequent 
  * versions of the EUPL (the "Licence"); 
@@ -21,5 +21,8 @@ import com.eviware.soapui.settings.Setting.SettingType;
 public interface SecuritySettings {
 
     @Setting(name = "Password", description = "password for shadowing proxy password in settings file", type = SettingType.PASSWORD)
-    public final static String SHADOW_PASSWORD = SecuritySettings.class.getSimpleName() + "@" + "shadowProxyPassword";
+    String SHADOW_PASSWORD = SecuritySettings.class.getSimpleName() + "@" + "shadowProxyPassword";
+
+    @Setting(name = "Disable the Load and Save scripts", description = "Do not run the Load and Save scripts on opening and saving projects", type = SettingType.BOOLEAN)
+    String DISABLE_PROJECT_LOAD_SAVE_SCRIPTS = SecuritySettings.class.getSimpleName() + "@disable_project_load_save_scripts";
 }

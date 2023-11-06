@@ -1,5 +1,5 @@
 /*
- * SoapUI, Copyright (C) 2004-2017 SmartBear Software
+ * SoapUI, Copyright (C) 2004-2022 SmartBear Software
  *
  * Licensed under the EUPL, Version 1.1 or - as soon as they will be approved by the European Commission - subsequent 
  * versions of the EUPL (the "Licence"); 
@@ -29,13 +29,11 @@ import com.eviware.soapui.support.UISupport;
  * @author ole.matzura
  */
 
-public class SecurityTestsModelItem extends EmptyModelItem {
-    private TestCase testCase;
+public class SecurityTestsModelItem extends BaseTestsModelItem {
     private TestSuiteListener listener = new InternalTestSuiteListener();
 
     public SecurityTestsModelItem(TestCase testCase) {
-        super(createLabel(testCase), UISupport.createImageIcon("/security_tests_group.png"));
-        this.testCase = testCase;
+        super(testCase, createLabel(testCase), UISupport.createImageIcon("/security_tests_group.png"));
 
         testCase.getTestSuite().addTestSuiteListener(listener);
     }

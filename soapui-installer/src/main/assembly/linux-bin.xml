@@ -17,6 +17,8 @@ bundled or none -->
             <scope>runtime</scope>
             <excludes>
                 <exclude>${project.groupId}:${project.src.artifactId}:jar:${project.version}</exclude>
+                <exclude>org.openjfx:*:jar:win:*</exclude>
+                <exclude>org.openjfx:*:jar:mac:*</exclude>
             </excludes>
         </dependencySet>
         <dependencySet>
@@ -56,10 +58,11 @@ bundled or none -->
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${basedir}/target</directory>
+            <directory>${basedir}/target/classes</directory>
             <outputDirectory>bin</outputDirectory>
             <includes>
                 <include>SoapUI-Spashscreen.png</include>
+                <include>SoapUI-Spashscreen@2x.png</include>
             </includes>
         </fileSet>
         <fileSet>

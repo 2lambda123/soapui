@@ -1,5 +1,5 @@
 /*
- * SoapUI, Copyright (C) 2004-2017 SmartBear Software
+ * SoapUI, Copyright (C) 2004-2022 SmartBear Software
  *
  * Licensed under the EUPL, Version 1.1 or - as soon as they will be approved by the European Commission - subsequent 
  * versions of the EUPL (the "Licence"); 
@@ -31,7 +31,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import java.awt.event.ActionEvent;
 
-public class PropertyTreeNode extends AbstractModelItemTreeNode<PropertyTreeNode.PropertyModelItem> {
+public class PropertyTreeNode extends AbstractModelItemTreeNode<PropertyModelItem> {
     private boolean readOnly;
     private final TestProperty property;
 
@@ -68,30 +68,6 @@ public class PropertyTreeNode extends AbstractModelItemTreeNode<PropertyTreeNode
             return actions;
         } else {
             return super.getActions();
-        }
-    }
-
-    public static class PropertyModelItem extends EmptyModelItem {
-        private final TestProperty property;
-        private String xpath;
-
-        public PropertyModelItem(TestProperty property, boolean readOnly) {
-            super(buildName(property), readOnly ? UISupport.createImageIcon("/bullet_black.gif") : UISupport
-                    .createImageIcon("/bullet_green.gif"));
-
-            this.property = property;
-        }
-
-        public TestProperty getProperty() {
-            return property;
-        }
-
-        public String getXPath() {
-            return xpath;
-        }
-
-        public void setXPath(String xpath) {
-            this.xpath = xpath;
         }
     }
 

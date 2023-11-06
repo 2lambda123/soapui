@@ -1,5 +1,5 @@
 /*
- * SoapUI, Copyright (C) 2004-2017 SmartBear Software
+ * SoapUI, Copyright (C) 2004-2022 SmartBear Software
  *
  * Licensed under the EUPL, Version 1.1 or - as soon as they will be approved by the European Commission - subsequent 
  * versions of the EUPL (the "Licence"); 
@@ -16,7 +16,7 @@
 
 package com.eviware.soapui.support;
 
-import hermes.JAXBHermesLoader;
+import hermes.HermesLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class HermesJMSClasspathHacker {
     }// end method
 
     private static void addURL(URL u) throws IOException {
-        ClassLoader classLoader = JAXBHermesLoader.class.getClassLoader();
+        ClassLoader classLoader = HermesLoader.class.getClassLoader();
         // ClasspathHacker.addUrlToClassLoader( u, classLoader );
     }// end method
 

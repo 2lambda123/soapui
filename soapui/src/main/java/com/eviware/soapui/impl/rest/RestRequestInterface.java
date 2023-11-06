@@ -1,5 +1,5 @@
 /*
- * SoapUI, Copyright (C) 2004-2017 SmartBear Software
+ * SoapUI, Copyright (C) 2004-2022 SmartBear Software
  *
  * Licensed under the EUPL, Version 1.1 or - as soon as they will be approved by the European Commission - subsequent 
  * versions of the EUPL (the "Licence"); 
@@ -20,7 +20,6 @@ import com.eviware.soapui.config.RestRequestConfig;
 import com.eviware.soapui.impl.support.http.HttpRequestInterface;
 import com.eviware.soapui.impl.wsdl.submit.transports.http.HttpResponse;
 import com.eviware.soapui.model.iface.SubmitContext;
-import org.apache.log4j.Logger;
 
 import java.beans.PropertyChangeListener;
 
@@ -30,19 +29,19 @@ public interface RestRequestInterface extends HttpRequestInterface<RestRequestCo
      * Each value in this enumeration represents an officially supported HTTP method ("verb").
      */
     enum HttpMethod {
-        GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, PATCH;
+        GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, PATCH, PROPFIND, LOCK, UNLOCK, COPY, PURGE;
 
         public static String[] getMethodsAsStringArray() {
             return new String[]{GET.toString(), POST.toString(), PUT.toString(), DELETE.toString(), HEAD.toString(),
-                    OPTIONS.toString(), TRACE.toString(), PATCH.toString()};
+                    OPTIONS.toString(), TRACE.toString(), PATCH.toString(), PROPFIND.toString(), LOCK.toString(), UNLOCK.toString(),
+                    COPY.toString(), PURGE.toString()};
         }
 
         public static HttpMethod[] getMethods() {
-            return new HttpMethod[]{GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, PATCH};
+            return new HttpMethod[]{GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, PATCH, PROPFIND, LOCK, UNLOCK, COPY, PURGE};
         }
     }
 
-    public final static Logger log = Logger.getLogger(RestRequest.class);
     public static final String DEFAULT_MEDIATYPE = "application/xml";
     public static final String REST_XML_REQUEST = "restXmlRequest";
 

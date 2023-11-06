@@ -1,5 +1,5 @@
 /*
- * SoapUI, Copyright (C) 2004-2017 SmartBear Software
+ * SoapUI, Copyright (C) 2004-2022 SmartBear Software
  *
  * Licensed under the EUPL, Version 1.1 or - as soon as they will be approved by the European Commission - subsequent 
  * versions of the EUPL (the "Licence"); 
@@ -29,8 +29,10 @@ import com.eviware.soapui.impl.wsdl.support.soap.TibcoSoapJMSBindingImporter;
 import com.eviware.soapui.settings.WsdlSettings;
 import com.eviware.soapui.support.Tools;
 import com.eviware.soapui.support.UISupport;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
 import javax.wsdl.Binding;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
@@ -54,7 +56,7 @@ public class WsdlImporter {
     @SuppressWarnings("unused")
     private static WsdlImporter instance;
 
-    private final static Logger log = Logger.getLogger(WsdlImporter.class);
+    private final static Logger log = LogManager.getLogger(WsdlImporter.class);
 
     static {
         try {
@@ -75,6 +77,7 @@ public class WsdlImporter {
         return importWsdl(project, wsdlUrl, bindingName, null);
     }
 
+    @Nullable
     public static WsdlInterface[] importWsdl(WsdlProject project, String wsdlUrl, QName bindingName,
                                              WsdlLoader wsdlLoader) throws Exception {
         wsdlUrl = Tools.normalizeFileSeparators(wsdlUrl);

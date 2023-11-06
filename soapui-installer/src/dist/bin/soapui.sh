@@ -6,9 +6,18 @@
 ### ====================================================================== ###
 
 ### $Id$ ###
-
-DIRNAME=`dirname $0`
-
+EXECUTABLE=`dirname "$0"`/`basename "$0"`
+LS_LD=`ls -ld "${EXECUTABLE}"`
+SYM_LINK_INDICATOR="->"
+if [ "$LS_LD" != "${LS_LD%$SYM_LINK_INDICATOR*}" ]
+then
+  EXECUTABLE=`ls -ld "${EXECUTABLE}" | sed -e 's|.*-> ||' -e 's|.* ${EXECUTABLE}|${EXECUTABLE}|'`
+  case "$EXECUTABLE" in
+    /*);;
+    *)EXECUTABLE=`dirname $0`/$EXECUTABLE
+  esac
+fi
+DIRNAME=`dirname $EXECUTABLE`
 # OS specific support (must be 'true' or 'false').
 cygwin=false;
 darwin=false;
@@ -34,6 +43,13 @@ SOAPUI_CLASSPATH=$SOAPUI_HOME/bin/${project.src.artifactId}-${project.version}.j
 export SOAPUI_CLASSPATH
 
 JAVA_OPTS="-Xms128m -Xmx1024m -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40 -Dsoapui.properties=soapui.properties -Dsoapui.home=$SOAPUI_HOME/bin -splash:SoapUI-Spashscreen.png"
+
+#CVE-2021-44228
+JAVA_OPTS="$JAVA_OPTS -Dlog4j2.formatMsgNoLookups=true"
+
+#JAVA 16
+JAVA_OPTS="$JAVA_OPTS --illegal-access=permit"
+
 JFXRTPATH=`java -cp $SOAPUI_CLASSPATH com.eviware.soapui.tools.JfxrtLocator`
 SOAPUI_CLASSPATH=$JFXRTPATH:$SOAPUI_CLASSPATH
 

@@ -1,4 +1,124 @@
-﻿# SoapUI Open Source 5.4.0
+﻿# SoapUI Open Source 5.7.2
+
+#### RELEASE_ME_ON ####
+
+### Overall improvements ###
+
+-------------------------------------------------------------------------------
+
+# SoapUI Open Source 5.7.1
+
+#### Released on 2023-08-01 ####
+
+Fixed an issue where SoapUI version 5.6.0 and 5.7.0 would not install or open on certain machines including Mac OS Ventura. There were issues with an expired Apple Certificate and previous bundled JRE environment.  We have signed the new version with updated Apple Certificate and also updated the bundled JRE environment to Liberica version 16.0.2+7. These updates which resolves this issue for Mac users and the application now installs properly. Windows and Linux versions also received updates to the bundled JRE environment.
+
+-------------------------------------------------------------------------------
+
+# SoapUI Open Source 5.7.0
+
+#### Released on Released on 01-12-2022 ####
+
+The new release includes support for GraphQL APIs and offers other improvements that make API testing more convenient and powerful.
+
+### GraphQL Support ###
+
+Now you can test GraphQL services. To do this, use the new GraphQL Request test step.
+
+### Docker support ###
+
+SmartBear introduces a pre-configured Docker image, so now you can run SoapUI functional tests in isolated Docker containers.
+
+### Built-in OpenAPI (Swagger) support ###
+
+Now, to work with OpenAPI/Swagger definitions, you do not need to use plugins. SoapUI supports it out-of-the-box. Additionally, we've improved integrations with SwaggerHub to make it even more convenient.
+
+### Overall improvements ###
+
+* Support for OpenJDK 16.
+* Now, SoapUI opens a response editor that matches the response content type. For example, it opens the JSON editor if a response has JSON content.
+* We've updated a number of third-party libraries, including the following:
+  * Apache Log4j library to 2.17.1.
+  * Jayway jsonpath to 2.4.0.
+* Now, SoapUI stores log files in the <User Directory>/.soapuios/logs directory. Previously, they were stored in the SoapUI installation directory, which could cause issues on Windows computers.
+* A new feature by modax: Now, you can run the SoapUI build from the Travis-CI.
+
+### Overall improvements ###
+
+* When a proxy is set to None, usage of the ProxySelector class leads to the NullPointerException.
+* The value of the Start Step property of the SOAP Mock Response could be reset to the default value in some cases.
+* A bug fix by stevendjames: When you used the Query/Match filter in the SOAP Mock Response test step, the ClassCastException could occur.
+* A bug fix by MagnoCorrea: Names of the exported WSDL definitions with schema references could be too long. Now, such names are shorter and easier to work with.
+* A bug fix by stevann7: REST mock services did not show details of the message when you double-clicked it in the Message Log panel.
+* A bug fix by modax: In some cases, when you assigned a new endpoint to requests with the specific endpoint in the Service Endpoints panel, SoapUI did not apply it.
+* A bug fix by clynton: The NullPointerException could occur if you did not add the runBeforeSteps event listener to the project.
+
+-------------------------------------------------------------------------------
+
+# SoapUI Open Source 5.6.1
+
+#### Released on 2021-12-20 ####
+
+This release updates the Apache Log4j library to v. 2.16 that mitigates CVE-2021-44228 (Log4Shell) and CVE-2021-45046.
+
+-------------------------------------------------------------------------------
+
+# SoapUI Open Source 5.6.0
+
+#### Released on 2020-09-07 ####
+
+### Overall improvements ###
+
+* remove useless jars. Jackson, KeenIO.
+
+* update org.apache.httpcomponents jar versions. httpclient:4.5.5, httpmime:4.5.5, httpclient-cache:4.5.5, httpcore:4.4.9, httpcore-nio:4.4.9
+
+* update commons-logging jar versions. commons-logging:1.2
+
+* update commons-codec jar versions. commons-codec:1.10
+
+* update junit jar versions. junit:4.12
+
+* move to openjdk 12
+
+### Bug Fixes ###
+
+* SoapUI 5.5.0 will not run project or suites - Toolkit not initialized error
+
+* Add setting to enable/disable load script/save script execution.
+
+* Plugins don't need to be signed by Smartbear. Any plugin will be loaded.
+
+* Plugins loaded once during launch process.
+
+-------------------------------------------------------------------------------
+
+# SoapUI Open Source 5.5.0
+
+#### Released 2019-02-06 ####
+
+### Overall improvements ###
+
+* SoapUI 5.5 introduces the Endpoint Explorer dialog. Use it to send exploratory requests and analyze responses without creating a project.
+
+* SoapUI now supports extended HTTP methods: PROPFIND, LOCK, UNLOCK, COPY, PURGE.
+
+* Now, if you try to open a project created in a later SoapUI version or in ReadyAPI, SoapUI will notify you about this.
+
+* SoapUI now requires Java 8 update 112 or higher.
+
+### Bug Fixes ###
+
+* An invalid name was set for a custom test step.
+
+* A bug fix by modax: WS-Security did not support Strict Layout Rules.
+
+* A bug fix by xgcssch: When a refresh token was used to update an OAuth 2.0 access token, the refresh token was not updated.
+
+* A bug fix by arykov: Symlinks to soapui.sh did not work.
+
+-------------------------------------------------------------------------------
+
+# SoapUI Open Source 5.4.0
 
 #### Released 2017-11-29 ####
 

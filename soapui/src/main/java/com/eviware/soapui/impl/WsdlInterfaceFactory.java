@@ -1,5 +1,5 @@
 /*
- * SoapUI, Copyright (C) 2004-2017 SmartBear Software
+ * SoapUI, Copyright (C) 2004-2022 SmartBear Software
  *
  * Licensed under the EUPL, Version 1.1 or - as soon as they will be approved by the European Commission - subsequent 
  * versions of the EUPL (the "Licence"); 
@@ -33,8 +33,10 @@ import com.eviware.soapui.model.propertyexpansion.PropertyExpander;
 import com.eviware.soapui.model.propertyexpansion.PropertyExpansionContext;
 import com.eviware.soapui.settings.WsdlSettings;
 import com.eviware.soapui.support.SoapUIException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.net.URI;
@@ -42,7 +44,7 @@ import java.net.URISyntaxException;
 
 public class WsdlInterfaceFactory implements InterfaceFactory<WsdlInterface> {
     public final static String WSDL_TYPE = "wsdl";
-    private final static Logger log = Logger.getLogger(WsdlInterfaceFactory.class);
+    private final static Logger log = LogManager.getLogger(WsdlInterfaceFactory.class);
 
     public WsdlInterface build(WsdlProject project, InterfaceConfig config) {
         return new WsdlInterface(project, (WsdlInterfaceConfig) config.changeType(WsdlInterfaceConfig.type));
@@ -66,6 +68,7 @@ public class WsdlInterfaceFactory implements InterfaceFactory<WsdlInterface> {
         return importWsdl(project, url, createRequests, null, wsdlLoader);
     }
 
+    @Nullable
     public static WsdlInterface[] importWsdl(WsdlProject project, String url, boolean createRequests,
                                              QName bindingName, WsdlLoader wsdlLoader) throws SoapUIException {
         WsdlInterface[] result;
