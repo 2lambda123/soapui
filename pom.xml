@@ -123,7 +123,7 @@
         <nekohtml.version>1.9.14</nekohtml.version>
         <jcifs.version>1.2.9</jcifs.version>
         <l2fprod.version>7.3</l2fprod.version>
-        <xmlsec.version>2.1.7</xmlsec.version>
+        <xmlsec.version>2.2.6</xmlsec.version>
         <xml-apis.version>2.9.1</xml-apis.version>
         <ws-commons-util.version>1.0.2</ws-commons-util.version>
         <proxy-vole.version>20131209</proxy-vole.version>
